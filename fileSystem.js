@@ -60,16 +60,42 @@ class ProductManager{
     };
 
 
-    //Actualizar un producto por ID
+    //Actualizar un producto por ID en campos especificos
         
-    updateProcuts = async ({id, ...producto}) => {
-        await this.deleteProductById(id);
-        let productold = await this.readProduct()
-        let productsModifi = [{ ...producto, id }, ...productold];
-        await fs.writeFile(this.patch, JSON.stringify(productsModifi));
+    updateProductById = async (id, updatedFields) => {
+        let products = await this.readProduct();
+        const productIndex = products.findIndex(product => product.id === id);
+
+        if (productIndex === -1) {
+            console.log("Producto no encontrado");
+            return;
+        }
+
+        products[productIndex] = {
+            ...products[productIndex],
+            ...updatedFields
+        };
+
+        await fs.writeFile(this.patch, JSON.stringify(products));
+        console.log("Producto actualizado exitosamente");
+
+
+        //Comprobación de que el producto en este caso "3" se modifica
+        if (id === 3) {
+            console.log(`Producto actualizado con ID 3:`);
+            console.log(products[productIndex]);
+        }
     };
+    
+    
+
+    updateProcuts = async (id, updatedFields) => {
+        await this.updateProductById(id, updatedFields);
+    };
+    
 
 };
+
 
 const productos = new ProductManager();
 
@@ -80,12 +106,8 @@ const productos = new ProductManager();
 //-------->Elimina el producto designado<--------------
 //productos.deleteProductById(2);
 
-productos.updateProcuts({
-    title: 'titulo3',
-    description: 'Description3',
-    price: 8500,
-    imagen: 'imagen3',
-    code: 'adc12345',
-    stock: 11,
-    id: 3
+
+//-------->Aquí se implementa los cambios en este ejemplo el stock, modificando solo el stock<-----------------
+productos.updateProcuts(3, {
+    stock: 200
 });
