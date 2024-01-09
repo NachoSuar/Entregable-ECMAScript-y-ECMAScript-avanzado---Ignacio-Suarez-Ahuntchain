@@ -1,6 +1,6 @@
 import {promises as fs, readFile} from "fs"
 
-class ProductManager{
+export default class ProductManager{
     constructor(){
         this.patch = "./productos.txt"
         this.products = []
@@ -97,7 +97,19 @@ class ProductManager{
 };
 
 
-const productos = new ProductManager();
+// const productos = new ProductManager();
+
+
+// productos.addProduct("Titulo1", "Descripction1", 1000, "Imagen1", "abc121", 1);
+// productos.addProduct("Titulo2", "Descripction2", 2000, "Imagen2", "abc122", 2);
+// productos.addProduct("Titulo3", "Descripction3", 3000, "Imagen3", "abc123", 3);
+// productos.addProduct("Titulo4", "Descripction4", 3500, "Imagen4", "abc124", 4);
+// productos.addProduct("Titulo5", "Descripction5", 4000, "Imagen5", "abc125", 5);
+// productos.addProduct("Titulo6", "Descripction6", 5000, "Imagen6", "abc126", 5);
+// productos.addProduct("Titulo7", "Descripction7", 6000, "Imagen7", "abc127", 3);
+// productos.addProduct("Titulo8", "Descripction8", 7000, "Imagen8", "abc128", 4);
+// productos.addProduct("Titulo9", "Descripction9", 8000, "Imagen9", "abc129", 2);
+// productos.addProduct("Titulo10", "Descripction10", 10000, "Imagen10", "abc130", 2);
 
 //-------->Llama a todos los productos<----------
 //productos.getProducts()
@@ -108,6 +120,6 @@ const productos = new ProductManager();
 
 
 //-------->Aquí se implementa los cambios en este ejemplo el stock, modificando solo el stock<-----------------
-productos.updateProcuts(3, {
-    stock: 200
-});
+// productos.updateProcuts(3, {
+//     stock: 200
+// });
