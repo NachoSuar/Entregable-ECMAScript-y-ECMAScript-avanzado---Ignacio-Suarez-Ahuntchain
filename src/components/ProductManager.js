@@ -1,101 +1,87 @@
-import {promises as fs, readFile} from "fs"
+import fs from "fs/promises";
+import { v4 as uuidv4 } from 'uuid';
 
-export default class ProductManager{
-    constructor(){
-        this.patch = "./productos.txt"
-        this.products = []
+export default class ProductManager {
+  constructor() {
+    //---------> Se ajusta la ruta y el nombre del archivo (Se puede cambiar)
+    this.path = "./productos.txt";
+    this.products = [];
+  }
+
+  //---------> Agrega un producto
+  addProduct = async (newProduct) => {
+    newProduct.id = uuidv4(); // Utilizamos UUID para IDs únicos
+    this.products.push(newProduct);
+
+    await fs.writeFile(this.path, JSON.stringify(this.products));
+  };
+
+  //---------> Lee productos del archivo
+  readProduct = async () => {
+    try {
+      let response = await fs.readFile(this.path, "utf-8");
+      return JSON.parse(response) || [];
+    } catch (error) {
+      console.error("Error al leer el archivo de productos:", error);
+      return [];
+    }
+  };
+
+  //---------> Muestra todos los productos
+  getProducts = async () => {
+    let response = await this.readProduct();
+    return console.log(response);
+  };
+
+  //---------> Muestra un producto por ID
+  getProductsById = async (id) => {
+    let response = await this.readProduct();
+    console.log("Todos los productos en getProductsById:", response);
+  
+    let product = response.find((product) => product.id === id);
+  
+    if (!product) {
+      console.log("Producto no encontrado en getProductsById");
+    } else {
+      console.log("Producto encontrado en getProductsById:", product);
+    }
+  
+    return product;
+  };
+  
+  
+
+  //---------> Elimina un producto por ID
+  deleteProductById = async (id) => {
+    let response = await this.readProduct();
+    let productFilter = response.filter((product) => product.id !== id);
+    await fs.writeFile(this.path, JSON.stringify(productFilter));
+    console.log("Producto Eliminado");
+  };
+
+  //---------> Actualiza un producto por ID en campos específicos
+  updateProductById = async (id, updatedFields) => {
+    let response = await this.readProduct();
+    const productIndex = response.findIndex((product) => product.id === id);
+
+    if (productIndex === -1) {
+      console.log("Producto no encontrado");
+      return;
+    }
+
+    response[productIndex] = {
+      ...response[productIndex],
+      ...updatedFields,
     };
 
-    static id = 0
-
-    //Agrega un producto
-
-    addProduct = async (title, description, price, imagen, code, stock) =>{
-
-        ProductManager.id++
-        let newProduct = {
-            title,
-            description,
-            price,
-            imagen,
-            code,
-            stock,
-            id: ProductManager.id
-
-        };
+    await fs.writeFile(this.path, JSON.stringify(response));
+    console.log("Producto actualizado exitosamente");
+  };
+}
 
 
-        this.products.push(newProduct);
 
-        await fs.writeFile(this.patch, JSON.stringify(this.products));
-    };
-
-    readProduct = async () => {
-        let respuesta = await fs.readFile(this.patch, "utf-8")
-        return JSON.parse(respuesta);
-    };
-
-    getProducts = async () => {
-        let respuesta2 = await this.readProduct()
-        return console.log(respuesta2);
-    };
-
-    getProductsById = async (id) => {
-
-        let respuesta3 = await this.readProduct() 
-        if(!respuesta3.find(product => product.id === id)){
-            console.log("Producto no encontrado");
-        }else{
-            console.log (respuesta3.find(product => product.id === id));
-        }
-    };
-
-    //Elimina un producto
-
-    deleteProductById = async (id) =>{
-        let respuesta3 = await this.readProduct();
-        let productFilter = respuesta3.filter(products => products.id != id);
-        await fs.writeFile(this.patch, JSON.stringify(productFilter));
-        console.log("Producto Eliminado");
-    };
-
-
-    //Actualizar un producto por ID en campos especificos
-        
-    updateProductById = async (id, updatedFields) => {
-        let products = await this.readProduct();
-        const productIndex = products.findIndex(product => product.id === id);
-
-        if (productIndex === -1) {
-            console.log("Producto no encontrado");
-            return;
-        }
-
-        products[productIndex] = {
-            ...products[productIndex],
-            ...updatedFields
-        };
-
-        await fs.writeFile(this.patch, JSON.stringify(products));
-        console.log("Producto actualizado exitosamente");
-
-
-        //Comprobación de que el producto en este caso "3" se modifica
-        if (id === 3) {
-            console.log(`Producto actualizado con ID 3:`);
-            console.log(products[productIndex]);
-        }
-    };
-    
-    
-
-    updateProcuts = async (id, updatedFields) => {
-        await this.updateProductById(id, updatedFields);
-    };
-    
-
-};
-
+//---------> Ejemplos viejos
 
 // const productos = new ProductManager();
 
